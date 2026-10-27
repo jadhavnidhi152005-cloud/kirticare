@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CampusCare Control Center</title>
+    <!-- Google Fonts & Font Awesome 6 Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem 1.5rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .stat-total { background: #eef2ff; color: var(--primary); }
+        .stat-pending { background: #fffbeb; color: #b45309; }
+        .stat-progress { background: #eff6ff; color: #1d4ed8; }
+        .stat-resolved { background: #ecfdf5; color: #047857; }
+
+        .filter-bar { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
+        .filter-bar input, .filter-bar select { padding: 0.6rem 0.8rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.9rem; outline: none; }
+        .filter-bar input { flex: 1; min-width: 200px; }
+
+        .auth-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 0.8rem 1.2rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; }
+        .access-denied-box { text-align: center; background: #ffffff; border: 1px solid var(--border); border-radius: 18px; padding: 3.5rem 1.5rem; max-width: 600px; margin: 3rem auto; box-shadow: var(--shadow-lg); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Access Restricted Screen (Shown if NOT College Staff) -->
+    <div id="accessDeniedBox" class="access-denied-box" style="display: none;">
+        <div style="width: 70px; height: 70px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 1.2rem;">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 style="font-size: 1.7rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem;">College Staff Access Restricted</h2>
+        <p style="color: var(--slate); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
+            This control center is handed over exclusively to <strong>College Administration & Facility Staff</strong> to resolve and solve infrastructure problems. Students can only register grievances and track their own tickets.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="login.html?role=admin" class="btn btn-primary" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                <i class="fa-solid fa-key"></i> College Authority Sign In
+            </a>
+            <a href="submit_complaint.html" class="btn btn-outline">
+                <i class="fa-solid fa-graduation-cap"></i> Student Grievance Portal
+            </a>
+        </div>
+    </div>
+
+    <!-- Authorized College Staff Dashboard Content -->
+    <div id="dashboardContent" style="display: none;">
+        <!-- Official Staff Banner -->
+        <div class="auth-banner">
+            <div style="display: flex; align-items: center; gap: 0.6rem; color: #991b1b; font-size: 0.88rem; font-weight: 700;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 1.2rem;"></i>
+                <span>College Resolution Authority: <span id="staffNameDisplay" style="color: #0f172a;">Campus Administrator</span></span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <span class="badge" style="background: #dc2626; color: #fff;">Resolution Mode Active</span>
+            </div>
+        </div>
+
+        <div class="header">
+            <div>
+                <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--dark);">
+                    <i class="fa-solid fa-gauge-high" style="color: var(--primary);"></i> Campus Facility & Resolution Center
+                </h2>
+                <p style="color: var(--slate); font-size: 0.95rem;">College staff authority portal: Assign technicians, record remarks, and solve student grievances</p>
+            </div>
+            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                <a href="reports.html" class="btn btn-outline"><i class="fa-solid fa-chart-pie"></i> View Reports</a>
+                <a href="index.html" class="btn btn-primary"><i class="fa-solid fa-house"></i> Home</a>
+                <button onclick="logoutUser(); window.location.href='login.html';" class="btn btn-outline">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Live Counter Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon stat-total"><i class="fa-solid fa-folder-open"></i></div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800;" id="countTotal">0</div>
+                    <div style="font-size: 0.8rem; color: var(--slate);">TOTAL COMPLAINTS</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-pending"><i class="fa-solid fa-hourglass-half"></i></div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800;" id="countPending">0</div>
+                    <div style="font-size: 0.8rem; color: var(--slate);">PENDING</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-progress"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800;" id="countProgress">0</div>
+                    <div style="font-size: 0.8rem; color: var(--slate);">IN PROGRESS</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-resolved"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <div style="font-size: 1.6rem; font-weight: 800;" id="countResolved">0</div>
+                    <div style="font-size: 0.8rem; color: var(--slate);">RESOLVED</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="filter-bar">
+            <input type="text" id="filterSearch" placeholder="Search ticket ID, location, or student..." onkeyup="renderTable()">
+            <select id="filterCat" onchange="renderTable()">
+                <option value="">All Categories</option>
+                <option value="Classroom">Classroom</option>
+                <option value="Washroom">Washroom</option>
+                <option value="Wi-Fi">Wi-Fi</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Water">Water</option>
+                <option value="Other">Other</option>
+            </select>
+            <select id="filterStatus" onchange="renderTable()">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+
+        <!-- Dynamic Complaints Table -->
+        <div class="table-wrap">
+            <table id="complaintsTable">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Student Info</th>
+                        <th>Category & Urgency</th>
+                        <th>Location</th>
+                        <th>Grievance Description</th>
+                        <th>Current Status</th>
+                        <th style="min-width: 250px;">College Resolution Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Dynamically generated rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Photo Modal -->
+<div id="adminPhotoModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;" onclick="if(event.target === this) closeAdminPhoto()">
+    <div style="background: #ffffff; border-radius: 16px; max-width: 720px; width: 100%; overflow: hidden; box-shadow: var(--shadow-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.4rem; border-bottom: 1px solid var(--border);">
+            <strong style="font-size: 1.05rem; color: var(--dark);" id="adminPhotoTitle"><i class="fa-solid fa-camera"></i> Student Attached Photo Evidence</strong>
+            <button type="button" class="btn btn-outline btn-sm" onclick="closeAdminPhoto()"><i class="fa-solid fa-xmark"></i> Close</button>
+        </div>
+        <div style="padding: 1.2rem; background: #0f172a; text-align: center;">
+            <img id="adminPhotoImg" src="" alt="Student Evidence Photo" style="max-height: 65vh; max-width: 100%; border-radius: 8px; object-fit: contain;">
+        </div>
+        <div style="padding: 0.85rem 1.4rem; background: #f8fafc; font-size: 0.84rem; color: var(--slate); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;" id="adminPhotoMeta">
+            <!-- Populated dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- Include Shared Storage Engine -->
+<script src="storage.js"></script>
+<script>
+    function checkAccess() {
+        const user = getCurrentUser();
+        const accessDeniedBox = document.getElementById('accessDeniedBox');
+        const dashboardContent = document.getElementById('dashboardContent');
+
+        // Check if user is logged in as College Staff / Admin
+        if (!user || user.role !== 'admin') {
+            accessDeniedBox.style.display = 'block';
+            dashboardContent.style.display = 'none';
+            return false;
+        }
+
+        accessDeniedBox.style.display = 'none';
+        dashboardContent.style.display = 'block';
+        document.getElementById('staffNameDisplay').innerText = `${user.name} (${user.department || 'Facility Head'})`;
+        return true;
+    }
+
+    function renderCounters() {
+        const list = getComplaints();
+        const total = list.length;
+        const pending = list.filter(c => c.status === 'Pending').length;
+        const progress = list.filter(c => c.status === 'In Progress').length;
+        const resolved = list.filter(c => c.status === 'Resolved').length;
+
+        document.getElementById('countTotal').innerText = total;
+        document.getElementById('countPending').innerText = pending;
+        document.getElementById('countProgress').innerText = progress;
+        document.getElementById('countResolved').innerText = resolved;
+    }
+
+    function renderTable() {
+        renderCounters();
+        const list = getComplaints();
+        const query = document.getElementById('filterSearch').value.toLowerCase().trim();
+        const cat = document.getElementById('filterCat').value;
+        const status = document.getElementById('filterStatus').value;
+        const tbody = document.getElementById('tableBody');
+
+        const filtered = list.filter(c => {
+            const matchesQuery = !query || 
+                (c.ticket_id && c.ticket_id.toLowerCase().includes(query)) ||
+                (c.location && c.location.toLowerCase().includes(query)) ||
+                (c.student_name && c.student_name.toLowerCase().includes(query)) ||
+                (c.description && c.description.toLowerCase().includes(query));
+            const matchesCat = !cat || c.category === cat;
+            const matchesStatus = !status || c.status === status;
+            return matchesQuery && matchesCat && matchesStatus;
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--slate);"><i class="fa-solid fa-folder-open" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>No complaints match the filter.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(c => {
+            const isHigh = c.priority === 'High';
+            const isMed = c.priority === 'Medium';
+            const prioColor = isHigh ? '#ef4444' : (isMed ? '#f59e0b' : '#10b981');
+
+            let badgeClass = 'badge-pending';
+            if (c.status === 'In Progress') badgeClass = 'badge-progress';
+            else if (c.status === 'Resolved') badgeClass = 'badge-resolved';
+            else if (c.status === 'Rejected') badgeClass = 'badge-rejected';
+
+            html += `
+            <tr>
+                <td>
+                    <a href="track_status.html?ticket_id=${c.ticket_id}" style="color: var(--primary); font-weight: 800; text-decoration: none;" title="Click to view live tracker">
+                        <i class="fa-solid fa-ticket"></i> ${c.ticket_id}
+                    </a>
+                    <div style="font-size: 0.75rem; color: var(--slate); margin-top: 0.2rem;">${c.created_at || ''}</div>
+                </td>
+                <td>
+                    <strong>${c.student_name}</strong>
+                    <div style="font-size: 0.78rem; color: var(--slate);">${c.roll_number} • ${c.department}</div>
+                </td>
+                <td>
+                    <span class="badge badge-cat">${c.category}</span>
+                    <div style="font-size: 0.75rem; color: ${prioColor}; font-weight: 700; margin-top: 0.2rem;">● ${c.priority} Priority</div>
+                </td>
+                <td><i class="fa-solid fa-location-dot" style="color: var(--slate);"></i> ${c.location}</td>
+                <td style="max-width: 240px; font-size: 0.88rem; line-height: 1.4;">
+                    <div>${c.description}</div>
+                    ${c.image_data ? `
+                    <div style="margin-top: 0.4rem;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="showAdminPhoto('${c.ticket_id}')" style="font-size: 0.74rem; padding: 0.2rem 0.55rem; color: var(--primary); border-color: #c7d2fe; background: #eef2ff;">
+                            <i class="fa-solid fa-camera"></i> View Student Photo
+                        </button>
+                    </div>` : ''}
+                </td>
+                <td>
+                    <span class="badge ${badgeClass}" id="badge-${c.ticket_id}">${c.status}</span>
+                </td>
+                <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                        <div style="display: flex; gap: 0.4rem;">
+                            <select id="status-${c.ticket_id}" style="padding: 0.35rem; font-size: 0.82rem; border-radius: 6px; border: 1px solid var(--border); flex: 1;">
+                                <option value="Pending" ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Resolved" ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                                <option value="Rejected" ${c.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                            </select>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="saveComplaint('${c.ticket_id}')">
+                                <i class="fa-solid fa-check"></i> Solve
+                            </button>
+                        </div>
+                        <input type="text" id="remark-${c.ticket_id}" value="${c.admin_remark || ''}" 
+                               placeholder="Enter resolution notes/technician dispatched..." 
+                               style="padding: 0.35rem 0.6rem; font-size: 0.8rem; border-radius: 6px; border: 1px solid var(--border);">
+                    </div>
+                </td>
+            </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    function saveComplaint(ticketId) {
+        const newStatus = document.getElementById('status-' + ticketId).value;
+        const newRemark = document.getElementById('remark-' + ticketId).value.trim();
+
+        // Update in localStorage
+        const ok = updateComplaintStatus(ticketId, newStatus, newRemark);
+        if (ok) {
+            alert(`✅ Problem Updated!\n\nComplaint ${ticketId} has been marked as "${newStatus}".\n\nStudents can now see this resolution in their Live Tracker.`);
+            renderTable();
+        } else {
+            alert('Error updating complaint.');
+        }
+    }
+
+    function showAdminPhoto(ticketId) {
+        const complaint = getComplaintByTicket(ticketId);
+        if (!complaint || !complaint.image_data) return;
+        document.getElementById('adminPhotoImg').src = complaint.image_data;
+        document.getElementById('adminPhotoTitle').innerHTML = `<i class="fa-solid fa-camera"></i> Student Photo Evidence • Ticket ${complaint.ticket_id} (${complaint.category})`;
+        document.getElementById('adminPhotoMeta').innerHTML = `
+            <span><strong>Reported by:</strong> ${complaint.student_name} (${complaint.roll_number || 'N/A'})</span>
+            <span><strong>Location:</strong> ${complaint.location}</span>
+        `;
+        document.getElementById('adminPhotoModal').style.display = 'flex';
+    }
+
+    function closeAdminPhoto() {
+        document.getElementById('adminPhotoModal').style.display = 'none';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (checkAccess()) {
+            renderTable();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Reports - CampusCare</title>
+    <!-- Google Fonts & Font Awesome 6 Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem 1.5rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        .stat-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .chart-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.6rem; box-shadow: var(--shadow-sm); }
+        .prog-bar { background: #e2e8f0; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 0.35rem; }
+        .prog-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+        @media print {
+            .no-print { display: none !important; }
+            body { padding: 0 !important; background: #fff !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Access Restricted Screen (Shown if NOT College Staff) -->
+    <div id="accessDeniedBox" class="access-denied-box" style="display: none; text-align: center; background: #ffffff; border: 1px solid var(--border); border-radius: 18px; padding: 3.5rem 1.5rem; max-width: 600px; margin: 3rem auto; box-shadow: var(--shadow-lg);">
+        <div style="width: 70px; height: 70px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 1.2rem;">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 style="font-size: 1.7rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem;">College Staff Access Restricted</h2>
+        <p style="color: var(--slate); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
+            Campus grievance analytics and the master maintenance audit log are handed over exclusively to <strong>College Administration & Facility Staff</strong>. Students can register grievances and track tickets via the student portal.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="login.html?role=admin" class="btn btn-primary" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                <i class="fa-solid fa-key"></i> College Authority Sign In
+            </a>
+            <a href="submit_complaint.html" class="btn btn-outline">
+                <i class="fa-solid fa-graduation-cap"></i> Student Grievance Portal
+            </a>
+        </div>
+    </div>
+
+    <!-- Authorized College Staff Reports Content -->
+    <div id="reportsContent" style="display: none;">
+        <div class="header">
+            <div>
+                <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--dark);">
+                    <i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Campus Infrastructure Grievance Report
+                </h2>
+                <p style="color: var(--slate); font-size: 0.95rem;">Comprehensive analytical breakdown of complaint dispatches and maintenance performance</p>
+            </div>
+            <div class="no-print" style="display: flex; gap: 0.6rem;">
+                <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / Save as PDF</button>
+                <a href="admin_dashboard.html" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+            </div>
+        </div>
+
+    <!-- Summary Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #eef2ff; color: var(--primary);"><i class="fa-solid fa-folder-open"></i></div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800;" id="repTotal">0</div>
+                <div style="font-size: 0.8rem; color: var(--slate);">TOTAL LOGGED</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #ecfdf5; color: #047857;"><i class="fa-solid fa-bullseye"></i></div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800;" id="repRate">0%</div>
+                <div style="font-size: 0.8rem; color: var(--slate);">RESOLUTION RATE</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #eff6ff; color: #1d4ed8;"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800;" id="repProgress">0</div>
+                <div style="font-size: 0.8rem; color: var(--slate);">UNDER REPAIR</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #fffbeb; color: #b45309;"><i class="fa-solid fa-user-graduate"></i></div>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 800;" id="repStudents">1</div>
+                <div style="font-size: 0.8rem; color: var(--slate);">STUDENTS ACTIVE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breakdown Charts -->
+    <div class="two-col">
+        <!-- By Facility -->
+        <div class="chart-card">
+            <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1.2rem;">
+                <i class="fa-solid fa-chart-column" style="color: var(--primary);"></i> Grievance Volume by Facility
+            </h3>
+            <div id="catBarsContainer" style="display: flex; flex-direction: column; gap: 0.9rem;">
+                <!-- Generated dynamically -->
+            </div>
+        </div>
+
+        <!-- By Status & Priority -->
+        <div class="chart-card">
+            <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1.2rem;">
+                <i class="fa-solid fa-gauge" style="color: var(--secondary);"></i> Status & Urgency Health
+            </h3>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; text-align: center; margin-bottom: 1.2rem;">
+                <div style="background: var(--pending-bg); padding: 0.75rem; border-radius: 10px; border: 1px solid var(--pending-border);">
+                    <div style="font-size: 1.3rem; font-weight: 800; color: var(--pending-text);" id="repPending">0</div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--pending-text);">Pending</div>
+                </div>
+                <div style="background: var(--progress-bg); padding: 0.75rem; border-radius: 10px; border: 1px solid var(--progress-border);">
+                    <div style="font-size: 1.3rem; font-weight: 800; color: var(--progress-text);" id="repProgBox">0</div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--progress-text);">In Progress</div>
+                </div>
+                <div style="background: var(--resolved-bg); padding: 0.75rem; border-radius: 10px; border: 1px solid var(--resolved-border);">
+                    <div style="font-size: 1.3rem; font-weight: 800; color: var(--resolved-text);" id="repResolved">0</div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: var(--resolved-text);">Resolved</div>
+                </div>
+            </div>
+
+            <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--slate); margin-bottom: 0.5rem;">By Urgency Level:</div>
+            <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.88rem;">
+                <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border);">
+                    <span style="color: #ef4444; font-weight: 700;">● High Urgency</span><strong id="repHigh">0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border);">
+                    <span style="color: #f59e0b; font-weight: 700;">● Medium Urgency</span><strong id="repMed">0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.3rem 0;">
+                    <span style="color: #10b981; font-weight: 700;">● Low Urgency</span><strong id="repLow">0</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Master Log Table -->
+    <div style="background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 1.6rem; box-shadow: var(--shadow-sm);">
+        <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem;">Master Maintenance Audit Log</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticket</th>
+                        <th>Student Name</th>
+                        <th>Facility</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="masterLogBody">
+                    <!-- Dynamic -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div> <!-- Close reportsContent -->
+</div> <!-- Close container -->
+
+<!-- Include Shared Storage Engine -->
+<script src="storage.js"></script>
+<script>
+    function checkAccess() {
+        if (!isAdminLoggedIn()) {
+            document.getElementById('reportsContent').style.display = 'none';
+            document.getElementById('accessDeniedBox').style.display = 'block';
+            return false;
+        }
+        document.getElementById('reportsContent').style.display = 'block';
+        document.getElementById('accessDeniedBox').style.display = 'none';
+        return true;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if (!checkAccess()) return;
+
+        const list = getComplaints();
+        const total = list.length;
+        const pending = list.filter(c => c.status === 'Pending').length;
+        const progress = list.filter(c => c.status === 'In Progress').length;
+        const resolved = list.filter(c => c.status === 'Resolved').length;
+        const rate = total > 0 ? ((resolved / total) * 100).toFixed(1) : '0.0';
+
+        document.getElementById('repTotal').innerText = total;
+        document.getElementById('repRate').innerText = rate + '%';
+        document.getElementById('repProgress').innerText = progress;
+        document.getElementById('repPending').innerText = pending;
+        document.getElementById('repProgBox').innerText = progress;
+        document.getElementById('repResolved').innerText = resolved;
+
+        const high = list.filter(c => c.priority === 'High').length;
+        const med = list.filter(c => c.priority === 'Medium').length;
+        const low = list.filter(c => c.priority === 'Low').length;
+
+        document.getElementById('repHigh').innerText = high + ' incidents';
+        document.getElementById('repMed').innerText = med + ' incidents';
+        document.getElementById('repLow').innerText = low + ' incidents';
+
+        // Unique students
+        const studentSet = new Set(list.map(c => c.student_name));
+        document.getElementById('repStudents').innerText = studentSet.size;
+
+        // Categories
+        const categories = ['Classroom', 'Washroom', 'Wi-Fi', 'Electricity', 'Water', 'Other'];
+        const catContainer = document.getElementById('catBarsContainer');
+        let catHtml = '';
+
+        categories.forEach(cat => {
+            const count = list.filter(c => c.category === cat).length;
+            const pct = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+            let icon = '🛠️';
+            if(cat === 'Classroom') icon = '🏫';
+            else if(cat === 'Washroom') icon = '🚻';
+            else if(cat === 'Wi-Fi') icon = '📶';
+            else if(cat === 'Electricity') icon = '⚡';
+            else if(cat === 'Water') icon = '🚰';
+
+            catHtml += `
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem;">
+                    <span>${icon} ${cat}</span><strong>${count} (${pct}%)</strong>
+                </div>
+                <div class="prog-bar"><div class="prog-fill" style="width: ${pct}%;"></div></div>
+            </div>
+            `;
+        });
+        catContainer.innerHTML = catHtml;
+
+        // Master Table
+        const logBody = document.getElementById('masterLogBody');
+        let tableHtml = '';
+        list.forEach(c => {
+            let badgeClass = 'badge-pending';
+            if (c.status === 'In Progress') badgeClass = 'badge-progress';
+            else if (c.status === 'Resolved') badgeClass = 'badge-resolved';
+            else if (c.status === 'Rejected') badgeClass = 'badge-rejected';
+
+            tableHtml += `
+            <tr>
+                <td><a href="track_status.html?ticket_id=${c.ticket_id}" style="color: var(--primary); font-weight: 700; text-decoration: none;">${c.ticket_id}</a></td>
+                <td><strong>${c.student_name}</strong><br><span style="font-size: 0.78rem; color: var(--slate);">${c.roll_number || 'N/A'}${c.department ? ' • ' + c.department : ''}</span></td>
+                <td>
+                    <span class="badge badge-cat">${c.category}</span>
+                    ${c.image_data ? '<span title="Photo Evidence Attached" style="color: var(--primary); margin-left: 0.25rem; font-size: 0.75rem;"><i class="fa-solid fa-camera"></i></span>' : ''}
+                </td>
+                <td>${c.location}</td>
+                <td><span class="badge ${badgeClass}">${c.status}</span></td>
+                <td style="font-size: 0.86rem;">${c.admin_remark || '-'}</td>
+            </tr>
+            `;
+        });
+        logBody.innerHTML = tableHtml;
+    });
+</script>
+</body>
+</html>

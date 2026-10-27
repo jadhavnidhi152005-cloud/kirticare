@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - CampusCare Two-Access Portal</title>
+    <!-- Google Fonts & Font Awesome 6 Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: var(--bg); }
+        .login-card { background: #ffffff; border: 1px solid var(--border); border-radius: 18px; padding: 2.5rem; max-width: 520px; width: 100%; box-shadow: var(--shadow-lg); }
+        .brand-header { text-align: center; margin-bottom: 1.5rem; }
+        
+        /* Two-Portal Tab Switcher */
+        .portal-tabs { display: flex; background: #f1f5f9; padding: 0.35rem; border-radius: 12px; margin-bottom: 1.8rem; border: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 0.75rem 0.5rem; border: none; background: transparent; font-weight: 700; font-size: 0.88rem; border-radius: 8px; cursor: pointer; color: var(--slate); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+        .tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .tab-btn.active.staff-tab { color: #dc2626; }
+
+        .demo-box { background: #f8fafc; border: 1.5px dashed var(--border); border-radius: 10px; padding: 0.9rem; margin-bottom: 1.5rem; font-size: 0.85rem; }
+        .demo-btns { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+        .demo-btn { background: #ffffff; border: 1px solid var(--border); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .demo-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .role-notice { padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.82rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
+        .student-notice { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+        .staff-notice { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .footer-link { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--slate); }
+        .footer-link a { color: var(--primary); font-weight: 700; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="brand-header">
+        <div class="brand-icon" style="margin: 0 auto 0.8rem;"><i class="fa-solid fa-building-columns"></i></div>
+        <h2 style="font-size: 1.6rem; font-weight: 800;">CampusCare Portal Access</h2>
+        <p style="color: var(--slate); font-size: 0.9rem; margin-top: 0.2rem;">Choose your access portal to continue</p>
+    </div>
+
+    <!-- Dual Role Tab Selector -->
+    <div class="portal-tabs">
+        <button type="button" class="tab-btn active" id="tabStudent" onclick="switchPortal('student')">
+            <i class="fa-solid fa-graduation-cap"></i> Student Portal
+        </button>
+        <button type="button" class="tab-btn" id="tabStaff" onclick="switchPortal('admin')">
+            <i class="fa-solid fa-shield-halved"></i> College Staff Authority
+        </button>
+    </div>
+
+    <!-- Notice Banner for Active Portal -->
+    <div class="role-notice student-notice" id="roleNotice">
+        <i class="fa-solid fa-circle-info"></i>
+        <span><strong>Student Access:</strong> Lodge complaints & track status in real-time.</span>
+    </div>
+
+    <!-- Quick 1-Click Demo Buttons for the selected portal -->
+    <div class="demo-box" id="demoBox">
+        <!-- Rendered dynamically depending on tab -->
+    </div>
+
+    <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label id="idLabel"><i class="fa-solid fa-id-card"></i> Student Email Address or Roll Number</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="text" id="emailInput" placeholder="e.g. rahul@college.edu or CS202401" required autofocus>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fa-solid fa-key"></i> Password</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="passInput" placeholder="Enter password" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%; margin-top: 0.5rem;">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In to Student Portal
+        </button>
+    </form>
+
+    <div class="footer-link" id="footerLinks">
+        <div id="studentRegisterNotice">
+            New student on campus? <a href="register.html">Create Student Account →</a>
+        </div>
+        <div style="margin-top: 1rem;">
+            <a href="index.html" style="color: var(--slate); font-weight: 500;"><i class="fa-solid fa-arrow-left"></i> Back to Homepage</a>
+        </div>
+    </div>
+</div>
+
+<!-- Include Shared Storage Engine -->
+<script src="storage.js"></script>
+<script>
+    let currentRole = 'student';
+
+    function switchPortal(role) {
+        currentRole = role;
+        const tabStudent = document.getElementById('tabStudent');
+        const tabStaff = document.getElementById('tabStaff');
+        const roleNotice = document.getElementById('roleNotice');
+        const demoBox = document.getElementById('demoBox');
+        const idLabel = document.getElementById('idLabel');
+        const emailInput = document.getElementById('emailInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const studentReg = document.getElementById('studentRegisterNotice');
+
+        emailInput.value = '';
+        document.getElementById('passInput').value = '';
+
+        if (role === 'admin') {
+            tabStudent.className = 'tab-btn';
+            tabStaff.className = 'tab-btn active staff-tab';
+            roleNotice.className = 'role-notice staff-notice';
+            roleNotice.innerHTML = '<i class="fa-solid fa-shield-halved"></i> <span><strong>College Staff Access:</strong> Exclusively for maintenance authorities to solve & update problems.</span>';
+            idLabel.innerHTML = '<i class="fa-solid fa-id-card-clip"></i> College Authority Email Address';
+            emailInput.placeholder = 'e.g. admin@college.edu';
+            submitBtn.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+            submitBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Sign In to College Authority Desk';
+            studentReg.style.display = 'none';
+
+            demoBox.innerHTML = `
+                <strong><i class="fa-solid fa-wand-magic-sparkles" style="color: #dc2626;"></i> Staff Test Account:</strong>
+                <div class="demo-btns">
+                    <button type="button" class="demo-btn" onclick="fillCreds('admin@college.edu', 'admin123')">
+                        <i class="fa-solid fa-shield-halved" style="color: #dc2626;"></i> Fill Campus Administrator
+                    </button>
+                </div>
+            `;
+        } else {
+            tabStudent.className = 'tab-btn active';
+            tabStaff.className = 'tab-btn';
+            roleNotice.className = 'role-notice student-notice';
+            roleNotice.innerHTML = '<i class="fa-solid fa-circle-info"></i> <span><strong>Student Access:</strong> Lodge complaints & track status in real-time.</span>';
+            idLabel.innerHTML = '<i class="fa-solid fa-id-card"></i> Student Email Address or Roll Number';
+            emailInput.placeholder = 'e.g. rahul@college.edu or CS202401';
+            submitBtn.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-hover))';
+            submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Student Portal';
+            studentReg.style.display = 'block';
+
+            demoBox.innerHTML = `
+                <strong><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary);"></i> Student Test Accounts:</strong>
+                <div class="demo-btns">
+                    <button type="button" class="demo-btn" onclick="fillCreds('rahul@college.edu', 'student123')">
+                        <i class="fa-solid fa-graduation-cap" style="color: var(--primary);"></i> Rahul Sharma
+                    </button>
+                    <button type="button" class="demo-btn" onclick="fillCreds('priya@college.edu', 'student123')">
+                        <i class="fa-solid fa-graduation-cap" style="color: #10b981;"></i> Priya Patel
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    function fillCreds(id, pass) {
+        document.getElementById('emailInput').value = id;
+        document.getElementById('passInput').value = pass;
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        const identifier = document.getElementById('emailInput').value.trim();
+        const password = document.getElementById('passInput').value;
+
+        // Enforce the selected portal role
+        const res = loginUser(identifier, password, currentRole);
+
+        if (res.success) {
+            if (res.user.role === 'admin') {
+                alert(`🏛️ College Staff Authority Access Granted!\n\nWelcome, ${res.user.name}.\nYou can now review student grievances and resolve problems.`);
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                alert(`🎓 Student Login Successful!\n\nWelcome, ${res.user.name} (${res.user.roll_number}).\nYou can now register complaints under your name.`);
+                window.location.href = 'submit_complaint.html';
+            }
+        } else {
+            alert('❌ ' + res.message);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const role = params.get('role');
+        if (role === 'admin') {
+            switchPortal('admin');
+        } else {
+            switchPortal('student');
+        }
+    });
+</script>
+</body>
+</html>

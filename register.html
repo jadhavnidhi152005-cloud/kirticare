@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - CampusCare</title>
+    <!-- Google Fonts & Font Awesome 6 Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        .reg-card { background: #ffffff; border: 1px solid var(--border); border-radius: 18px; padding: 2.5rem; max-width: 560px; width: 100%; box-shadow: var(--shadow-lg); }
+        .brand-header { text-align: center; margin-bottom: 1.8rem; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .footer-link { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--slate); }
+        .footer-link a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        @media(max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="reg-card">
+    <div class="brand-header">
+        <div class="brand-icon" style="margin: 0 auto 0.8rem;"><i class="fa-solid fa-user-plus"></i></div>
+        <h2 style="font-size: 1.6rem; font-weight: 800;">Student Registration</h2>
+        <p style="color: var(--slate); font-size: 0.9rem; margin-top: 0.2rem;">Create your profile to file and track grievances under your name</p>
+    </div>
+
+    <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+            <label><i class="fa-solid fa-user"></i> Full Name *</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="regName" placeholder="e.g. John Doe" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fa-solid fa-envelope"></i> College Email Address *</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="regEmail" placeholder="e.g. john@college.edu" required>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label><i class="fa-solid fa-id-badge"></i> Roll Number *</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <input type="text" id="regRoll" placeholder="e.g. CS202499" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-building"></i> Department *</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <select id="regDept" required>
+                        <option value="" disabled selected>Select Dept</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Arts & Humanities">Arts</option>
+                        <option value="Commerce And Management">Mechanical Engineering</option>
+                        <option value="Political Science">Political Science</option>
+                        <option value="Self finance">Self finance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fa-solid fa-lock"></i> Password *</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-key"></i>
+                <input type="password" id="regPass" placeholder="At least 4 characters" minlength="4" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+            <i class="fa-solid fa-user-check"></i> Register Account & Log In
+        </button>
+    </form>
+
+    <div class="footer-link">
+        Already registered? <a href="login.html">Sign In Here →</a><br><br>
+        <a href="index.html" style="color: var(--slate); font-weight: 500;"><i class="fa-solid fa-arrow-left"></i> Back to Homepage</a>
+    </div>
+</div>
+
+<!-- Include Shared Storage Engine -->
+<script src="storage.js"></script>
+<script>
+    function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const roll = document.getElementById('regRoll').value.trim();
+        const dept = document.getElementById('regDept').value;
+        const pass = document.getElementById('regPass').value;
+
+        const res = registerUser({
+            name: name,
+            email: email,
+            roll_number: roll,
+            department: dept,
+            password: pass
+        });
+
+        if (res.success) {
+            alert(`🎉 Account Created Successfully!\n\nWelcome, ${res.user.name} (${res.user.roll_number})!\nYou are now logged in. Any complaint you report will be registered under your name.`);
+            window.location.href = 'submit_complaint.html';
+        } else {
+            alert('❌ ' + res.message);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KirtiCare - Smart College Complaint Management System</title>
+    <!-- Google Fonts & Font Awesome 6 Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero-section { max-width: 1200px; margin: 2.5rem auto 1.5rem; padding: 0 1.5rem; }
+        .hero-card { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%); border-radius: var(--radius-lg); padding: 3.5rem 3rem; color: #ffffff; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+        .hero-card::after { content: ''; position: absolute; top: -50px; right: -50px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); padding: 0.35rem 0.9rem; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 1.2rem; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .hero-title { font-size: 2.8rem; font-weight: 800; line-height: 1.15; margin-bottom: 1rem; letter-spacing: -0.5px; }
+        .hero-desc { font-size: 1.15rem; color: #cbd5e1; max-width: 680px; margin-bottom: 2rem; line-height: 1.6; }
+        .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .hero-actions .btn-primary { background: #ffffff; color: var(--primary); }
+        .hero-actions .btn-primary:hover { background: #f8fafc; color: var(--primary-hover); }
+        .hero-actions .btn-outline { background: rgba(255, 255, 255, 0.1); color: #ffffff; border-color: rgba(255, 255, 255, 0.3); }
+        .hero-actions .btn-outline:hover { background: rgba(255, 255, 255, 0.2); border-color: #ffffff; }
+
+        /* Dual-Portal Dedicated Section */
+        .portal-selection-section { max-width: 1200px; margin: 2.5rem auto 1rem; padding: 0 1.5rem; }
+        .portal-selection-header { text-align: center; margin-bottom: 2rem; }
+        .portal-selection-header h2 { font-size: 2.1rem; font-weight: 800; color: var(--dark); letter-spacing: -0.5px; }
+        .portal-selection-header p { color: var(--slate); font-size: 1rem; max-width: 650px; margin: 0.4rem auto 0; }
+        .portal-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.8rem; }
+        .portal-card { background: #ffffff; border-radius: var(--radius-lg); padding: 2.2rem 2rem; border: 2px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; position: relative; transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+        .portal-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        .portal-card.student-card { border-top: 6px solid var(--primary); }
+        .portal-card.student-card:hover { border-color: var(--primary); }
+        .portal-card.staff-card { border-top: 6px solid #dc2626; }
+        .portal-card.staff-card:hover { border-color: #dc2626; }
+        .portal-badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1.2rem; width: fit-content; }
+        .student-badge { background: #e0e7ff; color: #4338ca; }
+        .staff-badge { background: #fee2e2; color: #b91c1c; }
+        .portal-header-icon { width: 60px; height: 60px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 1rem; }
+        .student-card .portal-header-icon { background: #eef2ff; color: var(--primary); }
+        .staff-card .portal-header-icon { background: #fef2f2; color: #dc2626; }
+        .portal-card-title { font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem; }
+        .portal-card-desc { color: var(--slate); font-size: 0.94rem; line-height: 1.55; margin-bottom: 1.4rem; }
+        .portal-features-list { list-style: none; margin-bottom: 1.8rem; display: flex; flex-direction: column; gap: 0.7rem; font-size: 0.9rem; color: var(--dark-light); }
+        .portal-features-list li { display: flex; align-items: flex-start; gap: 0.6rem; }
+        .portal-features-list li i { margin-top: 3px; font-size: 0.95rem; }
+        .student-card .portal-features-list li i { color: #4f46e5; }
+        .staff-card .portal-features-list li i { color: #dc2626; }
+        .portal-actions { margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+        .portal-actions .btn-row { display: flex; gap: 0.6rem; }
+
+        .stats-container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+        .stat-card { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.4rem; display: flex; align-items: center; gap: 1.1rem; box-shadow: var(--shadow-sm); transition: transform 0.2s ease; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .stat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+        .stat-icon.total    { background: var(--primary-light); color: var(--primary); }
+        .stat-icon.pending  { background: var(--pending-bg); color: var(--pending-text); }
+        .stat-icon.progress { background: var(--progress-bg); color: var(--progress-text); }
+        .stat-icon.resolved { background: var(--resolved-bg); color: var(--resolved-text); }
+        .stat-num { font-size: 1.75rem; font-weight: 800; color: var(--dark); line-height: 1.1; }
+        .stat-label { font-size: 0.82rem; color: var(--slate); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .section-header { text-align: center; margin: 3.5rem auto 1.8rem; max-width: 650px; padding: 0 1.5rem; }
+        .section-header h2 { font-size: 2rem; font-weight: 800; color: var(--dark); letter-spacing: -0.4px; }
+        .section-header p { color: var(--slate); font-size: 0.98rem; margin-top: 0.3rem; }
+
+        .categories-grid { max-width: 1200px; margin: 0 auto 3rem; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.25rem; }
+        .cat-card { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.8rem 1.4rem; text-align: center; transition: all 0.25s ease; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; }
+        .cat-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: #c7d2fe; }
+        .cat-icon-wrap { width: 62px; height: 62px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 1.1rem; }
+        .cat-card:hover .cat-icon-wrap { transform: scale(1.1); }
+        .cat-classroom .cat-icon-wrap   { background: #e0e7ff; color: #4338ca; }
+        .cat-washroom .cat-icon-wrap    { background: #ccfbf1; color: #0f766e; }
+        .cat-wifi .cat-icon-wrap        { background: #e0f2fe; color: #0369a1; }
+        .cat-electricity .cat-icon-wrap { background: #fef3c7; color: #b45309; }
+        .cat-water .cat-icon-wrap       { background: #dbeafe; color: #1d4ed8; }
+        .cat-title { font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; }
+        .cat-desc { font-size: 0.86rem; color: var(--slate); line-height: 1.5; margin-bottom: 1.2rem; }
+        .cat-link { margin-top: auto; font-size: 0.88rem; font-weight: 700; color: var(--primary); display: inline-flex; align-items: center; gap: 0.4rem; }
+
+        .workflow-box { max-width: 1200px; margin: 0 auto 4rem; padding: 3rem 2rem; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+        .workflow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; text-align: center; margin-top: 2rem; }
+        .step-icon { width: 58px; height: 58px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+        .step-1 { background: var(--primary-light); color: var(--primary); }
+        .step-2 { background: #e0f2fe; color: #0284c7; }
+        .step-3 { background: #ecfdf5; color: #059669; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Helpline Bar -->
+    <div class="topbar">
+        <div class="topbar-container">
+            <div>
+                <span class="topbar-item" style="margin-right: 1.2rem;"><i class="fa-solid fa-phone"></i> <strong>Campus Helpline:</strong>022-6276-4509</span>
+                <span class="topbar-item"><i class="fa-solid fa-clock"></i> Mon - Sat: 7:30 AM - 5:30 PM</span>
+            </div>
+            <div>
+                <span class="topbar-item" style="margin-right: 1.2rem;"><i class="fa-solid fa-envelope"></i>principle@kirticollege.edu.in</span>
+                            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <div class="brand-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div>
+                    <div>KirtiCare</div>
+                    <span class="brand-text-sub">Smart Grievance & Resolution Portal</span>
+                </div>
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="submit_complaint.html"><i class="fa-solid fa-graduation-cap"></i> Student Portal</a></li>
+                <li><a href="track_status.html"><i class="fa-solid fa-magnifying-glass"></i> Track Ticket</a></li>
+                <li id="adminNavBtn"><a href="admin_dashboard.html"><i class="fa-solid fa-shield-halved"></i> College Staff Desk</a></li>
+                <li id="authNavButtons">
+                    <a href="login.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-right-to-bracket"></i> Sign In</a>
+                    <a href="register.html" class="btn btn-primary btn-sm" style="margin-left: 0.5rem;"><i class="fa-solid fa-user-plus"></i> Register</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-card">
+            <div class="hero-badge"><i class="fa-solid fa-shield-check"></i> Two-Access Campus Redressal Architecture</div>
+            <h1 class="hero-title">Report, Track & Solve Campus Infrastructure Issues</h1>
+            <p class="hero-desc">
+                A dual-access system designed with clear separation: <strong>Student Access</strong> to register complaints under verified student profiles and track real-time resolution, and <strong>College Authority Access</strong> handed to college administration & maintenance staff to inspect, solve, and resolve problems.
+            </p>
+            <div class="hero-actions">
+                <a href="submit_complaint.html" class="btn btn-primary">
+                    <i class="fa-solid fa-graduation-cap"></i> Student: Lodge Grievance
+                </a>
+                <a href="track_status.html" class="btn btn-outline">
+                    <i class="fa-solid fa-magnifying-glass"></i> Track Ticket Status
+                </a>
+                <a href="login.html?role=admin" class="btn btn-outline" style="background: rgba(220, 38, 38, 0.25); border-color: rgba(254, 202, 202, 0.4);">
+                    <i class="fa-solid fa-shield-halved"></i> College Staff: Solve Problems
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Two-Access Architecture Showcase Section -->
+    <section class="portal-selection-section" id="accessPortals">
+        <div class="portal-selection-header">
+            <h2>Select Your Access Portal</h2>
+            <p>CampusCare separates user workflows into two dedicated access portals based on your campus role</p>
+        </div>
+
+        <div class="portal-cards-grid">
+            <!-- Access 1: Student Portal -->
+            <div class="portal-card student-card">
+                <div class="portal-badge student-badge">
+                    <i class="fa-solid fa-graduation-cap"></i> Access 1 • Student Portal
+                </div>
+                <div class="portal-header-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <h3 class="portal-card-title">Student Grievance & Tracking Desk</h3>
+                <p class="portal-card-desc">
+                    For all enrolled students to register infrastructure problems and monitor resolution status in real-time.
+                </p>
+                <ul class="portal-features-list">
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Lodge Grievances:</strong> Submit issues for Classroom, Washroom, Wi-Fi, Electricity, or Water.</div></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Student Identity Tag:</strong> Complaints are permanently registered under your verified student name & roll number.</div></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Live Tracking:</strong> Follow tickets across 4 clear stages (Logged → Under Review → In Progress → Resolved).</div></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Technician Visibility:</strong> View administrative remarks and technician dispatch updates.</div></li>
+                </ul>
+                <div class="portal-actions">
+                    <a href="submit_complaint.html" class="btn btn-primary" style="justify-content: center; font-size: 0.98rem; padding: 0.85rem;">
+                        <i class="fa-solid fa-circle-plus"></i> Lodge a Grievance Now
+                    </a>
+                    <div class="btn-row">
+                        <a href="track_status.html" class="btn btn-outline" style="flex: 1; justify-content: center;">
+                            <i class="fa-solid fa-magnifying-glass"></i> Track Ticket
+                        </a>
+                        <a href="login.html?role=student" class="btn btn-outline" style="flex: 1; justify-content: center;">
+                            <i class="fa-solid fa-right-to-bracket"></i> Student Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Access 2: College Authority Desk -->
+            <div class="portal-card staff-card">
+                <div class="portal-badge staff-badge">
+                    <i class="fa-solid fa-shield-halved"></i> Access 2 • College Authority
+                </div>
+                <div class="portal-header-icon">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </div>
+                <h3 class="portal-card-title">College Resolution & Staff Desk</h3>
+                <p class="portal-card-desc">
+                    Handed over exclusively to College Administration, Facility Supervisors & Technicians to inspect, solve, and resolve problems.
+                </p>
+                <ul class="portal-features-list">
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Restricted Staff Desk:</strong> Protected administrative portal requiring authorized staff sign in.</div></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Filter & Review:</strong> View campus grievances filtered by category, urgency, and student.</div></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Solve & Update:</strong> Change complaint status to Pending, In Progress, Resolved, or Rejected.</div></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <div><strong>Technician Remarks:</strong> Record resolution notes and work logs directly on each ticket.</div></li>
+                </ul>
+                <div class="portal-actions">
+                    <a href="login.html?role=admin" class="btn btn-primary" style="background: linear-gradient(135deg, #dc2626, #b91c1c); justify-content: center; font-size: 0.98rem; padding: 0.85rem;">
+                        <i class="fa-solid fa-key"></i> College Authority Sign In & Solve
+                    </a>
+                    <div class="btn-row">
+                        <a href="admin_dashboard.html" class="btn btn-outline" style="flex: 1; justify-content: center; border-color: #fca5a5; color: #991b1b;">
+                            <i class="fa-solid fa-gauge-high"></i> Control Panel
+                        </a>
+                        <a href="reports.html" class="btn btn-outline" style="flex: 1; justify-content: center;">
+                            <i class="fa-solid fa-chart-pie"></i> Reports Log
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-Time Statistics Counters -->
+    <section class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon total"><i class="fa-solid fa-folder-open"></i></div>
+            <div>
+                <div class="stat-num" id="statTotal">5</div>
+                <div class="stat-label">Total Logged</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon pending"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div>
+                <div class="stat-num" id="statPending">2</div>
+                <div class="stat-label">Pending Action</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon progress"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <div>
+                <div class="stat-num" id="statProgress">2</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon resolved"><i class="fa-solid fa-circle-check"></i></div>
+            <div>
+                <div class="stat-num" id="statResolved">1</div>
+                <div class="stat-label">Resolved Issues</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5 Complaint Categories -->
+    <section class="section-header" id="categories">
+        <h2>Select an Infrastructure Category</h2>
+        <p>Choose the facility department relevant to your campus grievance</p>
+    </section>
+
+    <section class="categories-grid">
+        <!-- 1. Classroom -->
+        <div class="cat-card cat-classroom">
+            <div class="cat-icon-wrap"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <div class="cat-title">Classrooms & Labs</div>
+            <div class="cat-desc">Projectors, smart-boards, seating benches, podiums, and lab apparatus.</div>
+            <a href="submit_complaint.html" class="cat-link">Report Issue <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- 2. Washroom -->
+        <div class="cat-card cat-washroom">
+            <div class="cat-icon-wrap"><i class="fa-solid fa-restroom"></i></div>
+            <div class="cat-title">Washroom Facilities</div>
+            <div class="cat-desc">Cleanliness, hygiene supplies, flush repairs, tap leakage, and sanitation.</div>
+            <a href="submit_complaint.html" class="cat-link">Report Issue <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- 3. Wi-Fi -->
+        <div class="cat-card cat-wifi">
+            <div class="cat-icon-wrap"><i class="fa-solid fa-wifi"></i></div>
+            <div class="cat-title">Wi-Fi & Internet</div>
+            <div class="cat-desc">Hostel Wi-Fi drops, lab Ethernet speeds, proxy access, and portal connectivity.</div>
+            <a href="submit_complaint.html" class="cat-link">Report Issue <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- 4. Electricity -->
+        <div class="cat-card cat-electricity">
+            <div class="cat-icon-wrap"><i class="fa-solid fa-bolt"></i></div>
+            <div class="cat-title">Electricity & Power</div>
+            <div class="cat-desc">Power outages, ceiling fans, switchboards, tube lights, and circuit tripping.</div>
+            <a href="submit_complaint.html" class="cat-link">Report Issue <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- 5. Water -->
+        <div class="cat-card cat-water">
+            <div class="cat-icon-wrap"><i class="fa-solid fa-faucet-drip"></i></div>
+            <div class="cat-title">Drinking Water</div>
+            <div class="cat-desc">Water coolers, RO purifiers, drinking water shortages, and filtration lights.</div>
+            <a href="submit_complaint.html" class="cat-link">Report Issue <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <div style="padding: 0 1.5rem;">
+        <section class="workflow-box">
+            <div style="text-align: center;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px;">Fast 3-Step Process</span>
+                <h3 style="font-size: 1.6rem; font-weight: 800; color: var(--dark); margin-top: 0.3rem;">How Grievance Redressal Works</h3>
+            </div>
+
+            <div class="workflow-grid">
+                <div class="workflow-step">
+                    <div class="step-icon step-1"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem;">1. Submit Ticket</h4>
+                    <p style="font-size: 0.88rem; color: var(--slate);">Select category, room location, and urgency. Receive a unique tracking ID instantly.</p>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-icon step-2"><i class="fa-solid fa-user-gear"></i></div>
+                    <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem;">2. Technician Assigned</h4>
+                    <p style="font-size: 0.88rem; color: var(--slate);">Campus authorities review and dispatch electricians, plumbers, or IT technicians immediately.</p>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-icon step-3"><i class="fa-solid fa-circle-check"></i></div>
+                    <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem;">3. Problem Resolved</h4>
+                    <p style="font-size: 0.88rem; color: var(--slate);">Track status in real-time. Administration records resolution notes upon successful fix.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- University Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem;">
+                        <div class="brand-icon" style="width: 32px; height: 32px; font-size: 0.95rem;"><i class="fa-solid fa-building-columns"></i></div>
+                        <span style="color: #ffffff; font-size: 1.2rem; font-weight: 800;">KirtiCare</span>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.86rem; line-height: 1.6; margin-bottom: 1rem;">
+                        The official smart grievance redressal and facility maintenance system. Ensuring high-standard classrooms, clean facilities, uninterrupted power, water, and campus-wide Wi-Fi.
+                    </p>
+                    <span style="display: inline-block; background: rgba(255,255,255,0.08); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; color: #cbd5e1;">
+                        <i class="fa-solid fa-certificate"></i> ISO 9001:2026 Certified Campus
+                    </span>
+                </div>
+
+                <div>
+                    <h4>Facility Portals</h4>
+                    <ul class="footer-links">
+                        <li><a href="submit_complaint.html"><i class="fa-solid fa-chalkboard-user"></i> Classrooms & Labs</a></li>
+                        <li><a href="submit_complaint.html"><i class="fa-solid fa-restroom"></i> Washrooms</a></li>
+                        <li><a href="submit_complaint.html"><i class="fa-solid fa-wifi"></i> Wi-Fi & Internet</a></li>
+                        <li><a href="submit_complaint.html"><i class="fa-solid fa-bolt"></i> Electricity & Power</a></li>
+                        <li><a href="submit_complaint.html"><i class="fa-solid fa-faucet-drip"></i> Drinking Water</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="track_status.html"><i class="fa-solid fa-magnifying-glass"></i> Track Ticket Status</a></li>
+                        <li><a href="login.html"><i class="fa-solid fa-key"></i> Student Login</a></li>
+                        <li><a href="register.html"><i class="fa-solid fa-user-plus"></i> New Student Account</a></li>
+                        <li><a href="admin_dashboard.html"><i class="fa-solid fa-user-shield"></i> Administration Portal</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4>Grievance Office</h4>
+                    <p style="font-size: 0.86rem; margin-bottom: 0.6rem;"><i class="fa-solid fa-location-dot" style="color: var(--secondary);"></i> Kashinath Dharu,off.Veer Savarkar Marg,Dadar(W),Mumbai-400028</p>
+                    <p style="font-size: 0.86rem; margin-bottom: 0.6rem;"><i class="fa-solid fa-phone" style="color: var(--secondary);"></i> +91 (022)6276-4509</p>
+                    <p style="font-size: 0.86rem;"><i class="fa-solid fa-envelope" style="color: var(--secondary);"></i> principle@kirticollege.edu.in</p>
+                </div>
+            </div>
+
+                       </div>
+        </div>
+    </footer>
+
+    <!-- Include Shared Storage Engine -->
+    <script src="storage.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // Update Stats
+            const list = getComplaints();
+            const total = list.length;
+            const pending = list.filter(c => c.status === 'Pending').length;
+            const progress = list.filter(c => c.status === 'In Progress').length;
+            const resolved = list.filter(c => c.status === 'Resolved').length;
+
+            const elTotal = document.getElementById('statTotal');
+            const elPending = document.getElementById('statPending');
+            const elProgress = document.getElementById('statProgress');
+            const elResolved = document.getElementById('statResolved');
+
+            if(elTotal) elTotal.innerText = total;
+            if(elPending) elPending.innerText = pending;
+            if(elProgress) elProgress.innerText = progress;
+            if(elResolved) elResolved.innerText = resolved;
+
+            // Update Navbar according to logged-in user
+            const currentUser = getCurrentUser();
+            const authContainer = document.getElementById('authNavButtons');
+            if (currentUser && authContainer) {
+                if (currentUser.role === 'admin') {
+                    authContainer.innerHTML = `
+                        <span style="background: #fef2f2; color: #991b1b; padding: 0.35rem 0.8rem; border-radius: 9999px; border: 1px solid #fecaca; font-size: 0.84rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                            <i class="fa-solid fa-shield-halved"></i> Staff: ${currentUser.name}
+                        </span>
+                        <a href="admin_dashboard.html" class="btn btn-primary btn-sm" style="background: #dc2626; margin-left: 0.4rem;">
+                            <i class="fa-solid fa-screwdriver-wrench"></i> Solve Issues
+                        </a>
+                        <button onclick="logoutUser(); location.reload();" class="btn btn-outline btn-sm" style="margin-left: 0.4rem;">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                        </button>
+                    `;
+                } else {
+                    const roll = currentUser.roll_number ? ` (${currentUser.roll_number})` : '';
+                    authContainer.innerHTML = `
+                        <span style="background: #eef2ff; color: #4338ca; padding: 0.35rem 0.8rem; border-radius: 9999px; border: 1px solid #c7d2fe; font-size: 0.84rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                            <i class="fa-solid fa-user-graduate"></i> ${currentUser.name}${roll}
+                        </span>
+                        <a href="submit_complaint.html" class="btn btn-primary btn-sm" style="margin-left: 0.4rem;">
+                            <i class="fa-solid fa-circle-plus"></i> New Complaint
+                        </a>
+                        <button onclick="logoutUser(); location.reload();" class="btn btn-outline btn-sm" style="margin-left: 0.4rem;">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                        </button>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

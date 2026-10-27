@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Grievance - CampusCare Student Portal</title>
+    <!-- Google Fonts & Font Awesome 6 Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem 1rem; background: var(--slate-light); }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 1.5rem; }
+
+        /* Top Action Bar */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.6rem; }
+
+        /* Student Identity & Privacy Banner */
+        .student-banner {
+            background: #ffffff;
+            border: 1.5px solid #c7d2fe;
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .student-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            padding: 0.2rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Guest / Admin Banner */
+        .notice-banner {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 14px;
+            padding: 1rem 1.3rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .admin-banner {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        /* My Complaints Table Card */
+        .my-complaints-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.4rem;
+            margin-bottom: 1.8rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .my-complaints-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .complaints-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .complaints-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        .complaints-table th {
+            text-align: left;
+            padding: 0.7rem 0.9rem;
+            background: #f8fafc;
+            color: var(--slate);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .complaints-table td {
+            padding: 0.85rem 0.9rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .complaints-table tr {
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .complaints-table tr:hover {
+            background: #f8fafc;
+        }
+        .complaints-table tr.active-ticket {
+            background: #eef2ff !important;
+            border-left: 4px solid var(--primary);
+        }
+        .complaints-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Search Card */
+        .search-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.4rem;
+            margin-bottom: 1.8rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .search-form { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .btn-sample {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn-sample:hover, .btn-sample.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #eef2ff;
+        }
+
+        /* 4-Step Progress Timeline */
+        .timeline { display: flex; justify-content: space-between; position: relative; margin: 2.5rem 1rem 2rem; }
+        .timeline::before { content: ''; position: absolute; top: 22px; left: 5%; right: 5%; height: 3px; background: var(--border); z-index: 1; }
+        .step { position: relative; z-index: 2; text-align: center; flex: 1; }
+        .step-icon { width: 44px; height: 44px; border-radius: 50%; background: #ffffff; border: 3px solid var(--border); color: var(--slate); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem; font-size: 1rem; }
+        .step.done .step-icon { background: #10b981; border-color: #a7f3d0; color: #fff; }
+        .step.active .step-icon { background: var(--primary); border-color: #c7d2fe; color: #fff; box-shadow: 0 0 0 5px rgba(79,70,229,0.2); }
+        .step-title { font-weight: 700; font-size: 0.85rem; }
+
+        /* Ticket Detail Card */
+        .ticket-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            background: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+        .remark-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.2rem;
+            border-radius: 6px;
+            margin-top: 1.2rem;
+        }
+
+        /* Privacy Access Denied Card */
+        .access-denied-ticket {
+            background: #ffffff;
+            border: 2px solid #fecaca;
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Empty State Card */
+        .empty-complaints-box {
+            background: #ffffff;
+            border: 1.5px dashed var(--border);
+            border-radius: 16px;
+            padding: 2.8rem 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Top Navigation Links -->
+    <div class="top-nav">
+        <a href="index.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Home</a>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <a href="submit_complaint.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-circle-plus"></i> Lodge Grievance</a>
+            <span id="topAuthBtn">
+                <a href="login.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-user-lock"></i> Switch Portal</a>
+            </span>
+        </div>
+    </div>
+
+    <!-- Student Profile & Privacy Status Banner -->
+    <div id="userBannerContainer">
+        <!-- Rendered dynamically depending on whether a student is logged in -->
+    </div>
+
+    <div class="header">
+        <div class="brand-icon" style="margin: 0 auto 0.8rem;"><i class="fa-solid fa-magnifying-glass-location"></i></div>
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--dark);">Live Grievance Tracker</h2>
+        <p style="color: var(--slate); font-size: 0.95rem;">Monitor real-time progress, technician dispatch, and resolution remarks</p>
+    </div>
+
+    <!-- "My Registered Complaints" Section (Shown only for the active student) -->
+    <div class="my-complaints-card" id="myComplaintsCard" style="display: none;">
+        <div class="my-complaints-header">
+            <div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--dark);">
+                    <i class="fa-solid fa-folder-open" style="color: var(--primary);"></i> My Registered Complaints
+                </h3>
+                <p style="color: var(--slate); font-size: 0.84rem;">Only complaints filed by your student account are displayed here</p>
+            </div>
+            <a href="submit_complaint.html" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus"></i> New Complaint
+            </a>
+        </div>
+
+        <div class="complaints-table-wrap">
+            <table class="complaints-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="myComplaintsTableBody">
+                    <!-- Populated dynamically with ONLY this student's complaints -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty Complaints State (If student has 0 registered complaints) -->
+    <div class="empty-complaints-box" id="emptyComplaintsBox" style="display: none;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #eef2ff; color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 1rem;">
+            <i class="fa-solid fa-inbox"></i>
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">No Complaints Registered Yet</h3>
+        <p style="color: var(--slate); font-size: 0.92rem; max-width: 480px; margin: 0.4rem auto 1.4rem;">
+            You currently have no active grievances. Experiencing problems with classrooms, washrooms, Wi-Fi, electricity, or water?
+        </p>
+        <a href="submit_complaint.html" class="btn btn-primary">
+            <i class="fa-solid fa-circle-plus"></i> Lodge a New Grievance
+        </a>
+    </div>
+
+    <!-- Search Bar & Personal Ticket Pills -->
+    <div class="search-card">
+        <form class="search-form" onsubmit="handleSearch(event)">
+            <div class="input-wrap" style="flex: 1; min-width: 240px;">
+                <i class="fa-solid fa-ticket"></i>
+                <input type="text" id="tInput" placeholder="Enter your Ticket ID (e.g. CMP-1001 or CMP-1002)" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-magnifying-glass"></i> Track Ticket
+            </button>
+        </form>
+
+        <div style="margin-top: 1rem; font-size: 0.82rem; color: var(--slate); display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;" id="sampleButtonsWrap">
+            <!-- Dynamic Ticket Pills for THIS STUDENT ONLY -->
+        </div>
+    </div>
+
+    <!-- PRIVACY ALERT: Access Restricted Box (Shown if student tries to view someone else's ticket) -->
+    <div class="access-denied-ticket" id="accessRestrictedBox" style="display: none;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 1rem;">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h3 style="font-size: 1.3rem; font-weight: 800; color: #991b1b;">Privacy Protected: Access Restricted</h3>
+        <p style="color: #475569; font-size: 0.94rem; line-height: 1.6; max-width: 540px; margin: 0.5rem auto 1.5rem;">
+            Complaint ticket <strong id="deniedTicketId" style="color: #dc2626;">CMP-XXXX</strong> belongs to another student.
+            To protect student privacy and confidentiality, you can <strong>only view grievances registered under your own student account</strong> (<span id="deniedStudentName">Your Name</span>).
+        </p>
+        <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary" onclick="loadMyFirstTicket()">
+                <i class="fa-solid fa-folder-open"></i> Return to My Complaints
+            </button>
+            <a href="submit_complaint.html" class="btn btn-outline">
+                <i class="fa-solid fa-circle-plus"></i> File a New Complaint
+            </a>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Card (Only shown if authorized) -->
+    <div class="ticket-card" id="ticketCard" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+                <span style="font-size: 0.78rem; color: var(--slate); text-transform: uppercase; font-weight: 700;">Tracking ID</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);" id="ticketIdDisplay">
+                    <i class="fa-solid fa-ticket"></i> CMP-1001
+                </div>
+            </div>
+            <div id="statusBadgeContainer">
+                <span class="badge badge-progress" id="statusBadge"><i class="fa-solid fa-gear"></i> In Progress</span>
+            </div>
+        </div>
+
+        <!-- 4-Step Visual Progress Timeline -->
+        <div class="timeline" id="timelineBar">
+            <div class="step done" id="step1">
+                <div class="step-icon"><i class="fa-solid fa-file-pen"></i></div>
+                <div class="step-title">1. Logged</div>
+                <div style="font-size: 0.72rem; color: var(--slate);" id="step1Date">-</div>
+            </div>
+            <div class="step done" id="step2">
+                <div class="step-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <div class="step-title">2. Under Review</div>
+                <div style="font-size: 0.72rem; color: var(--slate);">Verified</div>
+            </div>
+            <div class="step active" id="step3">
+                <div class="step-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div class="step-title">3. In Progress</div>
+                <div style="font-size: 0.72rem; color: var(--slate);">Dispatched</div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="step-title">4. Resolved</div>
+                <div style="font-size: 0.72rem; color: var(--slate);">Completed</div>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="meta-grid">
+            <div>
+                <span style="font-size: 0.78rem; color: var(--slate); display: block; text-transform: uppercase; font-weight: 700;">CATEGORY</span>
+                <strong id="catDisplay">📶 Wi-Fi & Internet</strong>
+            </div>
+            <div>
+                <span style="font-size: 0.78rem; color: var(--slate); display: block; text-transform: uppercase; font-weight: 700;">URGENCY</span>
+                <strong id="prioDisplay" style="color: #ef4444;">● High Priority</strong>
+            </div>
+            <div>
+                <span style="font-size: 0.78rem; color: var(--slate); display: block; text-transform: uppercase; font-weight: 700;">LOCATION</span>
+                <strong id="locDisplay">Library 2nd Floor</strong>
+            </div>
+            <div>
+                <span style="font-size: 0.78rem; color: var(--slate); display: block; text-transform: uppercase; font-weight: 700;">REPORTED BY</span>
+                <strong id="studentDisplay">Rahul Sharma (CS202401)</strong>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 1.2rem;">
+            <strong style="font-size: 0.85rem; color: var(--slate); text-transform: uppercase;">Problem Description:</strong>
+            <p style="margin-top: 0.4rem; font-size: 0.95rem; background: #ffffff; border: 1px solid var(--border); padding: 0.9rem; border-radius: 8px;" id="descDisplay">
+                Description goes here.
+            </p>
+        </div>
+
+        <!-- Attached Evidence Photo Section -->
+        <div id="evidencePhotoSection" style="margin-bottom: 1.4rem; display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <strong style="font-size: 0.85rem; color: var(--slate); text-transform: uppercase;">
+                    <i class="fa-solid fa-camera" style="color: var(--primary);"></i> Attached Photo Evidence:
+                </strong>
+                <span class="badge" style="background: #e0e7ff; color: var(--primary); font-size: 0.74rem;">
+                    <i class="fa-solid fa-circle-check"></i> Student Evidence Upload
+                </span>
+            </div>
+            <div style="background: #0f172a; border-radius: 12px; padding: 0.8rem; text-align: center; border: 1px solid var(--border);">
+                <img id="evidencePhotoImg" src="" alt="Complaint Evidence Photo" onclick="openPhotoModal()" style="max-height: 260px; width: auto; max-width: 100%; border-radius: 8px; display: block; margin: 0 auto; object-fit: contain; cursor: pointer; transition: transform 0.2s;" title="Click to view full photo">
+                <div style="color: #94a3b8; font-size: 0.76rem; margin-top: 0.4rem;">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i> Click photo to view enlarged
+                </div>
+            </div>
+        </div>
+
+        <!-- Official Technician Remark -->
+        <div>
+            <strong style="font-size: 0.85rem; color: var(--slate); text-transform: uppercase;">Official Maintenance / Technician Remarks:</strong>
+            <div class="remark-box" id="remarkBox">
+                <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.3rem;">
+                    <i class="fa-solid fa-user-shield"></i> Campus Facility Maintenance Update:
+                </div>
+                <p style="font-size: 0.92rem;" id="remarkDisplay">No remarks entered yet.</p>
+                <div style="font-size: 0.75rem; color: var(--slate); margin-top: 0.4rem;" id="updatedDisplay">Last updated: -</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error state container if ticket not found -->
+    <div id="notFoundBox" style="display: none; text-align: center; background: #fff; border: 1.5px dashed var(--border); border-radius: 16px; padding: 3rem 1.5rem; margin-top: 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #ef4444;"><i class="fa-solid fa-circle-question"></i></div>
+        <h3 style="font-size: 1.3rem; font-weight: 800;" id="notFoundTitle">Ticket Not Found</h3>
+        <p style="color: var(--slate); margin-top: 0.3rem;">Please verify the tracking number or submit a new grievance.</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="index.html" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Homepage</a>
+        <a href="submit_complaint.html" class="btn btn-primary" style="margin-left: 0.8rem;"><i class="fa-solid fa-circle-plus"></i> File Another Grievance</a>
+        <a href="admin_dashboard.html" class="btn btn-outline" style="margin-left: 0.8rem;"><i class="fa-solid fa-user-shield"></i> College Staff Portal</a>
+    </div>
+</div>
+
+<!-- Photo Lightbox Modal -->
+<div id="photoModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;" onclick="if(event.target === this) closePhotoModal()">
+    <div style="background: #ffffff; border-radius: 16px; max-width: 720px; width: 100%; overflow: hidden; box-shadow: var(--shadow-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.4rem; border-bottom: 1px solid var(--border);">
+            <strong style="font-size: 1.05rem; color: var(--dark);" id="modalPhotoTitle"><i class="fa-solid fa-camera"></i> Attached Evidence Photo</strong>
+            <button type="button" class="btn btn-outline btn-sm" onclick="closePhotoModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+        </div>
+        <div style="padding: 1.2rem; background: #0f172a; text-align: center;">
+            <img id="modalPhotoImg" src="" alt="Enlarged Evidence Photo" style="max-height: 65vh; max-width: 100%; border-radius: 8px; object-fit: contain;">
+        </div>
+    </div>
+</div>
+
+<!-- Include Shared Storage Engine -->
+<script src="storage.js"></script>
+<script>
+    let currentUser = null;
+    let myComplaints = [];
+    let activeTicketId = null;
+
+    function renderCategoryIcon(cat) {
+        if(cat === 'Classroom') return '🏫 Classroom & Labs';
+        if(cat === 'Washroom') return '🚻 Washroom Facilities';
+        if(cat === 'Wi-Fi') return '📶 Wi-Fi & Internet';
+        if(cat === 'Electricity') return '⚡ Electricity & Power';
+        if(cat === 'Water') return '🚰 Drinking Water';
+        return '🛠️ ' + cat;
+    }
+
+    // Render Student Banner or Guest Banner
+    function renderUserBanner() {
+        const container = document.getElementById('userBannerContainer');
+        const authBtn = document.getElementById('topAuthBtn');
+
+        if (currentUser) {
+            if (currentUser.role === 'admin') {
+                container.innerHTML = `
+                    <div class="notice-banner admin-banner">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <i class="fa-solid fa-shield-halved" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">College Authority Supervision Mode</div>
+                                <div style="font-size: 1.05rem; font-weight: 800;">${currentUser.name} (Administrator)</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="admin_dashboard.html" class="btn btn-primary btn-sm" style="background: #dc2626;"><i class="fa-solid fa-gauge-high"></i> Resolution Desk</a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const initial = (currentUser.name || 'S').charAt(0).toUpperCase();
+                container.innerHTML = `
+                    <div class="student-banner">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="student-avatar">${initial}</div>
+                            <div>
+                                <div class="privacy-badge"><i class="fa-solid fa-lock"></i> Private Student View • Only Your Grievances</div>
+                                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark); margin: 0;">
+                                    ${currentUser.name} 
+                                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary);">(${currentUser.roll_number || 'Student'} • ${currentUser.department || ''})</span>
+                                </h3>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="badge" style="background: #e0e7ff; color: #4338ca; font-weight: 700; padding: 0.4rem 0.8rem; border-radius: 9999px;">
+                                <i class="fa-solid fa-folder-closed"></i> ${myComplaints.length} Filed by You
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (authBtn) {
+                authBtn.innerHTML = `
+                    <button onclick="logoutUser(); window.location.href='login.html';" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                    </button>
+                `;
+            }
+        } else {
+            container.innerHTML = `
+                <div class="notice-banner">
+                    <div>
+                        <div style="font-weight: 700; color: #92400e; font-size: 0.95rem;">
+                            <i class="fa-solid fa-circle-info"></i> Viewing as Guest Student
+                        </div>
+                        <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.2rem;">
+                            Sign in with your student account to automatically view all grievances filed under your name.
+                        </div>
+                    </div>
+                    <a href="login.html?role=student" class="btn btn-primary btn-sm"><i class="fa-solid fa-right-to-bracket"></i> Student Sign In</a>
+                </div>
+            `;
+        }
+    }
+
+    // Render "My Registered Complaints" table (Strictly this student's complaints)
+    function renderMyComplaintsList() {
+        const card = document.getElementById('myComplaintsCard');
+        const emptyBox = document.getElementById('emptyComplaintsBox');
+        const tbody = document.getElementById('myComplaintsTableBody');
+
+        if (!currentUser || currentUser.role === 'admin') {
+            card.style.display = 'none';
+            emptyBox.style.display = 'none';
+            return;
+        }
+
+        if (myComplaints.length === 0) {
+            card.style.display = 'none';
+            emptyBox.style.display = 'block';
+            return;
+        }
+
+        card.style.display = 'block';
+        emptyBox.style.display = 'none';
+
+        let html = '';
+        myComplaints.forEach(c => {
+            let badgeClass = 'badge-pending';
+            if (c.status === 'In Progress') badgeClass = 'badge-progress';
+            else if (c.status === 'Resolved') badgeClass = 'badge-resolved';
+            else if (c.status === 'Rejected') badgeClass = 'badge-rejected';
+
+            const isActive = (c.ticket_id === activeTicketId) ? 'active-ticket' : '';
+
+            html += `
+            <tr class="${isActive}" onclick="loadTicket('${c.ticket_id}')">
+                <td><strong style="color: var(--primary);">${c.ticket_id}</strong></td>
+                <td>
+                    <span class="badge badge-cat">${c.category}</span>
+                    ${c.image_data ? '<span title="Photo Evidence Attached" style="color: var(--primary); margin-left: 0.35rem; font-size: 0.8rem;"><i class="fa-solid fa-camera"></i></span>' : ''}
+                </td>
+                <td><i class="fa-solid fa-location-dot" style="color: var(--slate); font-size: 0.8rem;"></i> ${c.location}</td>
+                <td style="color: var(--slate); font-size: 0.82rem;">${c.created_at || '-'}</td>
+                <td><span class="badge ${badgeClass}">${c.status}</span></td>
+                <td>
+                    <button type="button" class="btn btn-outline btn-sm" style="padding: 0.25rem 0.6rem; font-size: 0.78rem;">
+                        <i class="fa-solid fa-eye"></i> View
+                    </button>
+                </td>
+            </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    // Render Quick Select Pills strictly for this student
+    function renderQuickSelect() {
+        const wrap = document.getElementById('sampleButtonsWrap');
+
+        if (currentUser && currentUser.role === 'student') {
+            if (myComplaints.length > 0) {
+                let html = '<span><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Your Tickets:</span>';
+                myComplaints.forEach(c => {
+                    const isActive = (c.ticket_id === activeTicketId) ? 'active' : '';
+                    html += `
+                    <button type="button" class="btn-sample ${isActive}" onclick="loadTicket('${c.ticket_id}')">
+                        <i class="fa-solid fa-ticket"></i> ${c.ticket_id} (${c.category})
+                    </button>
+                    `;
+                });
+                wrap.innerHTML = html;
+            } else {
+                wrap.innerHTML = '<span style="color: var(--slate);"><i class="fa-solid fa-info-circle"></i> No complaints registered yet.</span>';
+            }
+        } else if (currentUser && currentUser.role === 'admin') {
+            const all = getComplaints();
+            let html = '<span><i class="fa-solid fa-shield-halved" style="color: #dc2626;"></i> All Campus Tickets:</span>';
+            all.slice(0, 5).forEach(c => {
+                html += `
+                <button type="button" class="btn-sample" onclick="loadTicket('${c.ticket_id}')">
+                    ${c.ticket_id} (${c.category})
+                </button>
+                `;
+            });
+            wrap.innerHTML = html;
+        } else {
+            wrap.innerHTML = '<span style="color: var(--slate);"><i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> Sign in to view your tickets.</span>';
+        }
+    }
+
+    // Load ticket with Strict Privacy Checks
+    function loadTicket(ticketId) {
+        if (!ticketId) return;
+        ticketId = ticketId.trim().toUpperCase();
+        document.getElementById('tInput').value = ticketId;
+
+        const complaint = getComplaintByTicket(ticketId);
+
+        // Hide all screens first
+        document.getElementById('ticketCard').style.display = 'none';
+        document.getElementById('notFoundBox').style.display = 'none';
+        document.getElementById('accessRestrictedBox').style.display = 'none';
+
+        if (!complaint) {
+            document.getElementById('notFoundBox').style.display = 'block';
+            document.getElementById('notFoundTitle').innerText = `Ticket '${ticketId}' Not Found`;
+            return;
+        }
+
+        // =======================================================
+        // PRIVACY ENFORCEMENT: A student can ONLY see THEIR complaint!
+        // =======================================================
+        if (currentUser && currentUser.role === 'student') {
+            const hasAccess = isComplaintOwner(complaint, currentUser);
+            if (!hasAccess) {
+                // Deny access! Do NOT show other student's complaint!
+                document.getElementById('accessRestrictedBox').style.display = 'block';
+                document.getElementById('deniedTicketId').innerText = ticketId;
+                document.getElementById('deniedStudentName').innerText = `${currentUser.name} (${currentUser.roll_number || ''})`;
+                return;
+            }
+        }
+
+        // Access Granted: Show Ticket Details
+        activeTicketId = ticketId;
+        document.getElementById('ticketCard').style.display = 'block';
+
+        // Render Complaint Info
+        document.getElementById('ticketIdDisplay').innerHTML = `<i class="fa-solid fa-ticket"></i> ${complaint.ticket_id}`;
+        document.getElementById('catDisplay').innerText = renderCategoryIcon(complaint.category);
+        document.getElementById('locDisplay').innerText = complaint.location;
+        document.getElementById('descDisplay').innerText = complaint.description;
+        document.getElementById('studentDisplay').innerText = `${complaint.student_name} (${complaint.roll_number || 'N/A'}${complaint.department ? ' • ' + complaint.department : ''})`;
+        document.getElementById('step1Date').innerText = complaint.created_at || 'Logged';
+
+        // Urgency
+        const prioEl = document.getElementById('prioDisplay');
+        prioEl.innerText = `● ${complaint.priority} Priority`;
+        prioEl.style.color = complaint.priority === 'High' ? '#ef4444' : (complaint.priority === 'Medium' ? '#f59e0b' : '#10b981');
+
+        // Status Badge & Timeline
+        const badgeCont = document.getElementById('statusBadgeContainer');
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const step4 = document.getElementById('step4');
+
+        if (complaint.status === 'Resolved') {
+            badgeCont.innerHTML = '<span class="badge badge-resolved"><i class="fa-solid fa-circle-check"></i> Resolved</span>';
+            step1.className = 'step done';
+            step2.className = 'step done';
+            step3.className = 'step done';
+            step4.className = 'step done active';
+        } else if (complaint.status === 'In Progress') {
+            badgeCont.innerHTML = '<span class="badge badge-progress"><i class="fa-solid fa-gear"></i> In Progress</span>';
+            step1.className = 'step done';
+            step2.className = 'step done';
+            step3.className = 'step active';
+            step4.className = 'step';
+        } else if (complaint.status === 'Rejected') {
+            badgeCont.innerHTML = '<span class="badge badge-rejected"><i class="fa-solid fa-circle-xmark"></i> Rejected</span>';
+            step1.className = 'step done';
+            step2.className = 'step active';
+            step3.className = 'step';
+            step4.className = 'step';
+        } else {
+            badgeCont.innerHTML = '<span class="badge badge-pending"><i class="fa-solid fa-hourglass-half"></i> Pending Review</span>';
+            step1.className = 'step done';
+            step2.className = 'step active';
+            step3.className = 'step';
+            step4.className = 'step';
+        }
+
+        // Remarks
+        const remarkDisplay = document.getElementById('remarkDisplay');
+        const updatedDisplay = document.getElementById('updatedDisplay');
+        if (complaint.admin_remark) {
+            remarkDisplay.innerText = complaint.admin_remark;
+            updatedDisplay.innerText = 'Last updated: ' + (complaint.updated_at || 'Recently');
+        } else {
+            remarkDisplay.innerText = 'Complaint is queued for administrative review. Work order technician notes will appear here once dispatched.';
+            updatedDisplay.innerText = 'Status: ' + complaint.status;
+        }
+
+        // Render Attached Photo Evidence
+        const photoSection = document.getElementById('evidencePhotoSection');
+        const photoImg = document.getElementById('evidencePhotoImg');
+        if (complaint.image_data) {
+            photoSection.style.display = 'block';
+            photoImg.src = complaint.image_data;
+        } else {
+            photoSection.style.display = 'none';
+            photoImg.src = '';
+        }
+
+        // Re-render table and pills with active state
+        renderMyComplaintsList();
+        renderQuickSelect();
+    }
+
+    function openPhotoModal() {
+        const src = document.getElementById('evidencePhotoImg').src;
+        if (!src) return;
+        document.getElementById('modalPhotoImg').src = src;
+        document.getElementById('modalPhotoTitle').innerHTML = `<i class="fa-solid fa-camera"></i> Attached Photo Evidence • Ticket ${activeTicketId}`;
+        document.getElementById('photoModal').style.display = 'flex';
+    }
+
+    function closePhotoModal() {
+        document.getElementById('photoModal').style.display = 'none';
+    }
+
+    function handleSearch(e) {
+        e.preventDefault();
+        const ticketId = document.getElementById('tInput').value.trim();
+        if (ticketId) {
+            loadTicket(ticketId);
+        }
+    }
+
+    function loadMyFirstTicket() {
+        if (myComplaints.length > 0) {
+            loadTicket(myComplaints[0].ticket_id);
+        } else {
+            document.getElementById('accessRestrictedBox').style.display = 'none';
+            document.getElementById('emptyComplaintsBox').style.display = 'block';
+        }
+    }
+
+    // Initialize Page
+    window.addEventListener('DOMContentLoaded', () => {
+        currentUser = getCurrentUser();
+        myComplaints = getStudentComplaints(currentUser);
+
+        renderUserBanner();
+        renderMyComplaintsList();
+        renderQuickSelect();
+
+        const params = new URLSearchParams(window.location.search);
+        const queryTicket = params.get('ticket_id');
+
+        if (queryTicket) {
+            loadTicket(queryTicket);
+        } else if (currentUser && currentUser.role === 'student') {
+            if (myComplaints.length > 0) {
+                // Default to this student's most recent complaint
+                loadTicket(myComplaints[0].ticket_id);
+            } else {
+                // No complaints registered yet
+                document.getElementById('emptyComplaintsBox').style.display = 'block';
+            }
+        } else if (currentUser && currentUser.role === 'admin') {
+            const all = getComplaints();
+            if (all.length > 0) loadTicket(all[0].ticket_id);
+        } else {
+            // Guest without query: try first complaint or prompt
+            const all = getComplaints();
+            if (all.length > 0) loadTicket(all[0].ticket_id);
+        }
+    });
+</script>
+</body>
+</html>

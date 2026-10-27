@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lodge Grievance - CampusCare</title>
+    <!-- Google Fonts & Font Awesome 6 Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem 1rem; }
+        .form-card { background: #ffffff; border: 1px solid var(--border); border-radius: 18px; padding: 2.5rem; max-width: 680px; margin: 0 auto; box-shadow: var(--shadow-lg); }
+        .header { text-align: center; margin-bottom: 1.5rem; }
+        .user-identity-card { background: #eef2ff; border: 1.5px solid #c7d2fe; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; }
+        .guest-identity-card { background: #fffbeb; border: 1.5px dashed #fcd34d; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+        .sla-banner { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 0.85rem 1.1rem; color: #065f46; font-size: 0.86rem; display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem; }
+        .grid-2 { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1rem; }
+        .btn-group { display: flex; gap: 1rem; margin-top: 1.8rem; }
+        
+        /* Image Upload & Evidence Styles */
+        .upload-dropzone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: all 0.2s ease; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .upload-dropzone:hover { border-color: var(--primary); background: #eef2ff; }
+        .upload-icon { width: 54px; height: 54px; border-radius: 50%; background: #e0e7ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 0.6rem; }
+        .preview-card { background: #ffffff; border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem; box-shadow: var(--shadow-sm); }
+        .btn-sample-photo { background: #ffffff; border: 1px solid var(--border); border-radius: 6px; padding: 0.25rem 0.55rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-sample-photo:hover { border-color: var(--primary); color: var(--primary); background: #eef2ff; }
+
+        @media(max-width: 550px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div style="max-width: 680px; margin: 0 auto 1.2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+    <a href="index.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-left"></i> Home</a>
+    <div style="display: flex; gap: 0.5rem;">
+        <a href="track_status.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-magnifying-glass"></i> Track Ticket</a>
+        <a href="login.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-user-lock"></i> Switch Portal</a>
+    </div>
+</div>
+
+<div class="form-card">
+    <div class="header">
+        <div class="brand-icon" style="margin: 0 auto 0.8rem;"><i class="fa-solid fa-pen-to-square"></i></div>
+        <h2 style="font-size: 1.7rem; font-weight: 800;">Lodge Infrastructure Grievance</h2>
+        <p style="color: var(--slate); font-size: 0.92rem; margin-top: 0.2rem;">Complaint will be officially recorded under your student profile</p>
+    </div>
+
+    <!-- Dynamic Logged-in User Identity Banner -->
+    <div id="identityContainer">
+        <!-- Rendered dynamically by JavaScript -->
+    </div>
+
+    <!-- Service SLA Notice -->
+    <div class="sla-banner">
+        <i class="fa-solid fa-circle-check" style="font-size: 1.2rem; color: #10b981;"></i>
+        <div><strong>Response Standard:</strong> Urgent water & power breakdowns are inspected within 2-4 hours. Wi-Fi and classroom tickets within 24 hours.</div>
+    </div>
+
+    <form onsubmit="handleSubmit(event)">
+        <div class="grid-2">
+            <!-- Problem Category -->
+            <div class="form-group">
+                <label><i class="fa-solid fa-list-check"></i> Facility Category *</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-tag"></i>
+                    <select id="catSelect" required>
+                        <option value="" disabled selected>-- Select Problem Area --</option>
+                        <option value="Classroom">🏫 Classroom & Labs (Projector, Bench, Board)</option>
+                        <option value="Washroom">🚻 Washroom (Sanitation, Flush, Tap leak)</option>
+                        <option value="Wi-Fi">📶 Wi-Fi & Internet (Hostel, Lab, Signal)</option>
+                        <option value="Electricity">⚡ Electricity (Fan, Light, Switchboard)</option>
+                        <option value="Water">🚰 Drinking Water (Cooler, Purifier leak)</option>
+                        <option value="Library">Library(Books,Sitting Arrangement)</option>
+                        <option value="Canteen">Canteen(Food,Sitting Arrangement)</option>
+                        <option value="Other">🛠️ Other Facility Issue</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Priority -->
+            <div class="form-group">
+                <label><i class="fa-solid fa-triangle-exclamation"></i> Urgency / Priority *</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-flag"></i>
+                    <select id="prioSelect" required>
+                        <option value="Low">🟢 Low (Routine maintenance)</option>
+                        <option value="Medium" selected>🟡 Medium (Normal priority)</option>
+                        <option value="High">🔴 High (Immediate hazard/Critical)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-location-dot"></i> Exact Campus Location / Room Number *</label>
+            <div class="input-wrap">
+                <i class="fa-solid fa-map-pin"></i>
+                <input type="text" id="locInput" placeholder="e.g. Science Block B, 2nd Floor, Room 204 or Girls Hostel 1" required>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--slate); margin-top: 0.35rem; display: block;">Specify block, floor, or room number for faster technician dispatch.</span>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-file-lines"></i> Detailed Problem Description *</label>
+            <textarea id="descInput" placeholder="Describe the problem (e.g. ceiling fan vibrating noisily, or washroom tap leaking constantly)..." required></textarea>
+        </div>
+
+        <!-- Upload Issue Photo / Evidence (Requested by user) -->
+        <div class="form-group">
+            <label><i class="fa-solid fa-camera"></i> Attach Photo Evidence (Optional)</label>
+            
+            <!-- Click/Drop Zone -->
+            <div class="upload-dropzone" id="imageUploadZone" onclick="document.getElementById('imageInput').click()">
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+                <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <div style="font-weight: 700; color: var(--dark); font-size: 0.95rem;">Click to upload or take a photo</div>
+                <div style="font-size: 0.8rem; color: var(--slate); margin-top: 0.2rem;">Supports PNG, JPG, JPEG, WEBP (Photo helps maintenance staff verify and resolve the issue faster)</div>
+            </div>
+
+            <!-- Live Image Preview Card -->
+            <div id="imagePreviewContainer" class="preview-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                    <div style="font-size: 0.84rem; font-weight: 700; color: var(--primary); display: inline-flex; align-items: center; gap: 0.4rem;">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Photo Attached & Ready
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="removeImage()" style="color: #dc2626; border-color: #fca5a5; padding: 0.25rem 0.6rem; font-size: 0.78rem;">
+                        <i class="fa-solid fa-trash-can"></i> Remove Photo
+                    </button>
+                </div>
+                <div style="background: #0f172a; border-radius: 8px; padding: 0.5rem; text-align: center;">
+                    <img id="imagePreviewImg" src="" alt="Complaint Photo Preview" style="max-height: 220px; width: auto; max-width: 100%; border-radius: 6px; display: block; margin: 0 auto; object-fit: contain;">
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--slate); margin-top: 0.5rem;">
+                    <span id="imageFileName">evidence-photo.jpg</span>
+                    <span id="imageFileSize">Attached</span>
+                </div>
+            </div>
+
+            <!-- Quick Sample Photo Selection (For instant testing) -->
+            <div style="margin-top: 0.6rem; font-size: 0.8rem; color: var(--slate); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                <span><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary);"></i> Or pick quick sample photo:</span>
+                <button type="button" class="btn-sample-photo" onclick="loadSamplePhoto('Water')">🚰 Water Cooler</button>
+                <button type="button" class="btn-sample-photo" onclick="loadSamplePhoto('Washroom')">🚻 Leaking Tap</button>
+                <button type="button" class="btn-sample-photo" onclick="loadSamplePhoto('Wi-Fi')">📶 Wi-Fi Router</button>
+                <button type="button" class="btn-sample-photo" onclick="loadSamplePhoto('Electricity')">⚡ Switchboard</button>
+                <button type="button" class="btn-sample-photo" onclick="loadSamplePhoto('Classroom')">🏫 Projector</button>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                <i class="fa-solid fa-paper-plane"></i> Submit Grievance Ticket
+            </button>
+            <a href="index.html" class="btn btn-outline" style="flex: 0.4;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Include Shared Storage Engine -->
+<script src="storage.js"></script>
+<script>
+    let currentUser = null;
+    let currentImageData = '';
+
+    function handleImageSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file (PNG, JPG, JPEG, WEBP).');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const rawData = e.target.result;
+            // Compress large camera photos to ensure smooth localStorage persistence
+            compressImage(rawData, 900, 0.75, function(compressed) {
+                currentImageData = compressed;
+                document.getElementById('imagePreviewContainer').style.display = 'block';
+                document.getElementById('imageUploadZone').style.display = 'none';
+                document.getElementById('imagePreviewImg').src = compressed;
+                document.getElementById('imageFileName').innerText = file.name;
+                document.getElementById('imageFileSize').innerText = (file.size / 1024).toFixed(1) + ' KB';
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function compressImage(dataUrl, maxDimension, quality, callback) {
+        const img = new Image();
+        img.onload = function() {
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+                if (width > maxDimension) {
+                    height = Math.round((height * maxDimension) / width);
+                    width = maxDimension;
+                }
+            } else {
+                if (height > maxDimension) {
+                    width = Math.round((width * maxDimension) / height);
+                    height = maxDimension;
+                }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL('image/jpeg', quality);
+            callback(compressed);
+        };
+        img.onerror = function() {
+            callback(dataUrl);
+        };
+        img.src = dataUrl;
+    }
+
+    function removeImage() {
+        currentImageData = '';
+        document.getElementById('imageInput').value = '';
+        document.getElementById('imagePreviewContainer').style.display = 'none';
+        document.getElementById('imageUploadZone').style.display = 'flex';
+        document.getElementById('imagePreviewImg').src = '';
+    }
+
+    function loadSamplePhoto(category) {
+        currentImageData = getDefaultSampleImage(category);
+        document.getElementById('imagePreviewContainer').style.display = 'block';
+        document.getElementById('imageUploadZone').style.display = 'none';
+        document.getElementById('imagePreviewImg').src = currentImageData;
+        document.getElementById('imageFileName').innerText = category + '_sample_evidence.svg';
+        document.getElementById('imageFileSize').innerText = 'Verified Sample Evidence';
+    }
+
+    function renderUserIdentity() {
+        currentUser = getCurrentUser();
+        const container = document.getElementById('identityContainer');
+
+        if (currentUser) {
+            const initial = (currentUser.name || 'S').charAt(0).toUpperCase();
+            container.innerHTML = `
+                <div class="user-identity-card">
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem;">
+                            ${initial}
+                        </div>
+                        <div>
+                            <div style="font-size: 0.78rem; color: var(--slate); text-transform: uppercase; font-weight: 700;">
+                                <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Registering Under Account:
+                            </div>
+                            <div style="font-size: 1.05rem; font-weight: 800; color: var(--dark);">
+                                ${currentUser.name} 
+                                <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary);">(${currentUser.roll_number || 'Admin'} • ${currentUser.department || ''})</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="login.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-arrow-right-arrow-left"></i> Switch User</a>
+                    </div>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="guest-identity-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #92400e;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> You are not logged in.
+                        </div>
+                        <div>
+                            <a href="login.html" style="font-weight: 700; color: var(--primary); font-size: 0.85rem; text-decoration: underline;">Sign In here</a> or enter your name below:
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                        <div>
+                            <label style="font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.2rem;">Your Full Name *</label>
+                            <input type="text" id="guestName" placeholder="e.g. John Doe" class="form-control" style="padding: 0.5rem 0.8rem; font-size: 0.88rem;" required>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.2rem;">Roll Number *</label>
+                            <input type="text" id="guestRoll" placeholder="e.g. CS202499" class="form-control" style="padding: 0.5rem 0.8rem; font-size: 0.88rem;" required>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        const cat = document.getElementById('catSelect').value;
+        const prio = document.getElementById('prioSelect').value;
+        const loc = document.getElementById('locInput').value.trim();
+        const desc = document.getElementById('descInput').value.trim();
+
+        if (!cat || !loc || !desc) {
+            alert('Please fill out all required fields.');
+            return;
+        }
+
+        let studentName = "Guest Student";
+        let rollNumber = "N/A";
+        let department = "General";
+
+        if (currentUser) {
+            studentName = currentUser.name;
+            rollNumber = currentUser.roll_number;
+            department = currentUser.department;
+        } else {
+            const gName = document.getElementById('guestName');
+            const gRoll = document.getElementById('guestRoll');
+            if (gName && gName.value.trim()) studentName = gName.value.trim();
+            if (gRoll && gRoll.value.trim()) rollNumber = gRoll.value.trim();
+        }
+
+        // Add to persistent storage under the student's exact name
+        const newComplaint = addComplaint({
+            category: cat,
+            priority: prio,
+            location: loc,
+            description: desc,
+            image_data: currentImageData,
+            student_name: studentName,
+            roll_number: rollNumber,
+            department: department
+        });
+
+        const photoMsg = currentImageData ? '\n📸 Evidence photo successfully attached!' : '';
+        alert(`🎉 Grievance Registered Successfully!\n\nRegistered under student: ${newComplaint.student_name} (${newComplaint.roll_number})\nYour Tracking Ticket ID: ${newComplaint.ticket_id}${photoMsg}\n\nRedirecting to the Live Tracker now...`);
+        
+        // Redirect directly to the tracking page for this ticket ID
+        window.location.href = 'track_status.html?ticket_id=' + encodeURIComponent(newComplaint.ticket_id);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        renderUserIdentity();
+    });
+</script>
+</body>
+</html>
